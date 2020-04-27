@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metoda Gaussa</title>
+
+    <link rel="stylesheet" href="css/lib/bootstrap.min.css"/>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="page-header pt-5 pb-4">
+            <h4>Operacje na macierzach z wykorzystaniem metody Gaussa</h4>
+            Aplikacja służy do obliczania rozwiązań danych układów równań liniowych oraz obliczania macierzy odwrotnych. Obie te operacje wykonywane są z zastosowaniem metody Gaussa.
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="equations-tab" data-toggle="tab" href="#equations" role="tab" aria-controls="equations" aria-selected="true">Rozwiązywanie układów równań</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="inversion-tab" data-toggle="tab" href="#inversion" role="tab" aria-controls="inversion" aria-selected="false">Obliczanie macierzy odwrotnej</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="equations" role="tabpanel" aria-labelledby="equations-tab">
+                <div class="p-3">
+                    Ilość niewiadomych: 
+                    <input type="number" id="variable-input" min="1"/>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="inversion" role="tabpanel" aria-labelledby="inversion-tab">
+                <div class="p-3">
+                    [ ODWRACANIE MACIERZY PLACEHOLDER ]
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/lib/jquery-3.5.0.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+</body>
+</html>
