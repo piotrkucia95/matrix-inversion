@@ -6,15 +6,17 @@
     <title>Metoda Gaussa</title>
 
     <link rel="stylesheet" href="css/lib/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
     
     <div class="container">
-        <div class="page-header pt-5 pb-4">
+        <div class="page-header pt-5">
             <h4>Operacje na macierzach z wykorzystaniem metody Gaussa</h4>
-            Aplikacja służy do obliczania rozwiązań danych układów równań liniowych oraz obliczania macierzy odwrotnych. Obie te operacje wykonywane są z zastosowaniem metody Gaussa.
+            Aplikacja służy do obliczania rozwiązań układów równań liniowych metodą Gaussa.
         </div>
 
+    <!--
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="equations-tab" data-toggle="tab" href="#equations" role="tab" aria-controls="equations" aria-selected="true">Rozwiązywanie układów równań</a>
@@ -25,20 +27,28 @@
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="equations" role="tabpanel" aria-labelledby="equations-tab">
-                <div class="p-3">
-                    Ilość niewiadomych: 
-                    <input type="number" id="variable-input" min="1"/>
-                </div>
+    -->
+        <div class="main-container pt-4">
+            Ilość niewiadomych: 
+            <input type="number" id="variable-input" min="1"/>
+            <button id="variables-submit-button" onclick="subimtNumberOfVariables();">Zatwierdź</button>
+            <button id="clear-button" onclick="clearEquations();">Wyczyść</button>
+            <div id="variables-error" class="error text-danger"></div>
+        </div>
+    <!--
             </div>
+
             <div class="tab-pane fade" id="inversion" role="tabpanel" aria-labelledby="inversion-tab">
                 <div class="p-3">
                     [ ODWRACANIE MACIERZY PLACEHOLDER ]
                 </div>
             </div>
         </div>
+    -->
     </div>
 
     <script src="js/lib/jquery-3.5.0.min.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

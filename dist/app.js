@@ -7,16 +7,13 @@ const express_1 = __importDefault(require("express"));
 const controller_1 = require("./controller");
 const path_1 = __importDefault(require("path"));
 const app = express_1.default();
-const PORT = process.env.PORT || '5000';
+const PORT = process.env.PORT || '3000';
 const gaussController = new controller_1.GaussController();
-app.get('/', (req, res, next) => {
-    res.sendFile(path_1.default.join(__dirname + '/../views/index.html'));
-});
-app.get('/gauss-solutions', (req, res, next) => {
-    // res.send(gaussController.add(1, 2) + '');
-    let matrix = [[1, 2, 5], [0.5, 1, 2.5]];
-    // let matrix: number[][] = [[1, 1, 1, 1], [2, 1, 5, 0], [1, -1, -1, 0]];
-    console.log(matrix);
-    console.log(gaussController.gaussElimination(matrix));
+app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json());
+app.post('/gauss-solutions', (req, res, next) => {
+    let matrix = JSON.parse(req.body.matrix);
+    res.json(gaussController.gaussElimination(matrix));
 });
 app.listen(PORT, () => { console.log(`Listening on port ${PORT}`); });
