@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class GaussController {
+class Controller {
     add(a, b) {
         return a + b;
     }
@@ -38,4 +38,4 @@ class GaussController {
         };
     }
 }
-exports.GaussController = GaussController;
+exports.Controller = Controller;

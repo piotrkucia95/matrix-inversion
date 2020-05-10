@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const controller_1 = require("./controller");
+const Controller_1 = require("./Controller");
 const path_1 = __importDefault(require("path"));
 const app = express_1.default();
 const PORT = process.env.PORT || '3000';
-const gaussController = new controller_1.GaussController();
+const gaussController = new Controller_1.Controller();
 app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());

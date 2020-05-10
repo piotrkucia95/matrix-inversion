@@ -1,5 +1,112 @@
-var subimtNumberOfVariables = function () {
+var submitManualCreation = function() {
+    var order           = +jQuery('#order-input').val();
+    var matrixElements  = jQuery('#matrix-elements');
+    var time            = jQuery('#time');
+    var errorMessage    = jQuery('#order-error');
+    if (!order || order < 0) {
+        errorMessage.text('Wprowadź stopień macierzy.');
+    } else if (matrixElements.length || time.length)  {
+        errorMessage.text('Wyczyść układ przed wygenerowaniem kolejnego.');
+    } else {
+        errorMessage.text('');
+        var inputsHTML = '<div id="matrix-elements" class="pt-3">';
+        for (let i = 0; i < order; i++) {
+            inputsHTML += '<div class="mb-1">'
+            for (let j = 0; j < order; j++) {
+                inputsHTML += '<input id="el_' + i + '_' + j + '" class="inversion-input mr-1"/>' 
+            }
+            inputsHTML += '</div>'
+        }
+        inputsHTML += '<div id="inversion-error" class="error text-danger"></div>';
+        inputsHTML += '<button id="inverse-button" class="mt-3" onclick="inverseMatrix(true);">Odwróć macierz</button>'
+        inputsHTML += '</div>';
+        jQuery('#inversion-container').append(inputsHTML);
+    }
+};
 
+var submitRandomCreation = function() {
+    var order           = +jQuery('#order-input').val();
+    var matrixElements  = jQuery('#matrix-elements');
+    var time            = jQuery('#time');
+    var errorMessage    = jQuery('#order-error');
+    if (!order || order < 0) {
+        errorMessage.text('Wprowadź stopień macierzy.');
+    } else if (matrixElements.length || time.length) {
+        errorMessage.text('Wyczyść układ przed wygenerowaniem kolejnego.');
+    } else {
+        errorMessage.text('');
+        inverseMatrix(false);
+    }
+};
+
+var inverseMatrix = function(isManual) {
+    var matrix = isManual ? getMatrixElements() : generateMatrix();
+    sendInversionRequest(matrix);
+};
+
+var getMatrixElements = function() {
+    var inputs = jQuery('.inversion-input');
+    var matrix = [];
+    for (let e of inputs) {
+        if (!e.value) {
+            jQuery('#inversion-error').text('Wypełnij wszystkie pola.');
+        } else {
+            var elementId = e.id.split('_');
+            matrix[elementId[1]] ? matrix[elementId[1]][elementId[2]] = +e.value : matrix[elementId[1]] = [+e.value];
+        }
+    }
+    return matrix;
+};
+
+var generateMatrix = function() {
+    var order = +jQuery('#order-input').val();
+    var matrix = [];
+    for (let i = 0; i < order; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < order; j++) {
+            if (i === j) {
+                matrix[i][j] = order + 1;   
+            } else {
+                matrix[i][j] = 1;            }
+        }
+    }
+    return matrix;
+};
+
+var sendInversionRequest = function(matrix) {
+    var startTime = performance.now();
+    jQuery.ajax({
+        url: '/matrix-inverse',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            'matrix': JSON.stringify(matrix)
+        },
+    })
+    .done((data) => {
+        var endTime = performance.now();
+        if (data.length < 10) {
+            displayInversionResults(data);
+        }
+        jQuery('#inversion-container').append('<div id="time" class="mt-3">' + (data.length < 10 ? '' : 'Otrzymano macierz odwrotną. ') + 'Czas obliczeń: ' + ((endTime - startTime).toFixed(2)) + ' ms.</div>');
+    });
+};
+
+var displayInversionResults = function(results) {
+    var echelonHTML = '<div id="echelon" class="pt-4">Macierz odwrotna::'
+    echelonHTML += '<table class="echelon-matrix mt-2">';
+    for (let row of results) {
+        echelonHTML += '<tr><td> </td>';
+        for (column of row) {
+            echelonHTML += ('<td>&nbsp;&nbsp;' + column + '&nbsp;&nbsp;</td>');
+        }
+        echelonHTML += '<td> </td></tr>';
+    }
+    echelonHTML += '</table>';
+    jQuery('#inversion-container').append(echelonHTML);
+}
+
+var subimtNumberOfVariables = function () {
     var numberOfVariables   = +jQuery('#variable-input').val();
     var errorMessage        = jQuery('#variables-error');
     var equationsElement    = jQuery('#equations');
@@ -11,13 +118,15 @@ var subimtNumberOfVariables = function () {
     } else {
         errorMessage.text('');
         let equationsHTML = generateEquationInputs(numberOfVariables);
-        jQuery('.main-container').append(equationsHTML);
+        jQuery('#equations-container').append(equationsHTML);
     }
 };
 
-var clearEquations = function() {
+var clearPanel = function() {
+    jQuery('#matrix-elements').remove();
     jQuery('#equations').remove();
     jQuery('#echelon').remove();
+    jQuery('#time').remove();
     jQuery('#results').remove();
 }
 
@@ -41,7 +150,7 @@ var solveEquations = function() {
         }
     }
     jQuery('#equations-error').text('');
-    sendRequest(matrix);
+    sendEquationsRequest(matrix);
 }
 
 var generateEquationInputs = function (numberOfVariables) {
@@ -70,7 +179,8 @@ var generateInput = function (row, column) {
     return `<input type"number" id="${row + '_' + column}" class="equations-input"> `;
 }
 
-var sendRequest = function(matrix) {
+var sendEquationsRequest = function(matrix) {
+    var startTime = performance.now();
     jQuery.ajax({
         url: '/gauss-solutions',
         type: 'post',
@@ -80,11 +190,13 @@ var sendRequest = function(matrix) {
         },
     })
     .done((data) => {
-        displayResults(data);
+        var endTime = performance.now();
+        displayEquationsResults(data);
+        jQuery('#equations-container').append('<div id="time" class="mt-3">Czas obliczeń: ' + ((endTime - startTime).toFixed(2)) + ' ms.</div>');
     });
 };
 
-var displayResults = function(result) {
+var displayEquationsResults = function(result) {
     var echelonHTML = '<div id="echelon" class="pt-4">Macierz schodkowa:'
     echelonHTML += '<table class="echelon-matrix mt-2">';
     for (let row of result.echelonMatrix) {
@@ -96,8 +208,8 @@ var displayResults = function(result) {
     }
     echelonHTML += '</table>';
     resultsHTML = checkSolutions(result.echelonMatrix, result.result);
-    jQuery('.main-container').append(echelonHTML);
-    jQuery('.main-container').append(resultsHTML);
+    jQuery('#equations-container').append(echelonHTML);
+    jQuery('#equations-container').append(resultsHTML);
 };
 
 var checkSolutions = function(matrix, results) {
