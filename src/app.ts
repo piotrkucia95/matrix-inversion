@@ -18,8 +18,7 @@ app.post('/gauss-solutions', (req: Request, res: Response, next: NextFunction) =
 });
 
 app.post('/matrix-inverse', (req: Request, res: Response, next: NextFunction) => {
-    let order: number = +req.body.matrixSize;
-    let matrix: number[][] = req.body.matrix ? JSON.parse(req.body.matrix) : controller.generateMatrix(order);
+    let matrix: number[][] = JSON.parse(req.body.matrix);
     res.json(controller.inverseMatrix(matrix));
 });
 
