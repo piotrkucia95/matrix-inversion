@@ -41,7 +41,8 @@ var submitRandomCreation = function() {
 
 var inverseMatrix = function(isManual) {
     var matrix = isManual ? getMatrixElements() : generateMatrix();
-    sendInversionRequest(matrix);
+    var matrixSize = +jQuery('#order-input').val();
+    sendInversionRequest(matrix, matrixSize);
 };
 
 var getMatrixElements = function() {
@@ -58,29 +59,16 @@ var getMatrixElements = function() {
     return matrix;
 };
 
-var generateMatrix = function() {
-    var order = +jQuery('#order-input').val();
-    var matrix = [];
-    for (let i = 0; i < order; i++) {
-        matrix[i] = [];
-        for (let j = 0; j < order; j++) {
-            if (i === j) {
-                matrix[i][j] = order + 1;   
-            } else {
-                matrix[i][j] = 1;            }
-        }
-    }
-    return matrix;
-};
-
-var sendInversionRequest = function(matrix) {
+var sendInversionRequest = function(matrix, matrixSize) {
     var startTime = performance.now();
     jQuery.ajax({
         url: '/matrix-inverse',
         type: 'post',
         dataType: 'json',
-        data: {
+        data: matrix ? {
             'matrix': JSON.stringify(matrix)
+        } : {
+            'matrix-size': matrixSize
         },
     })
     .done((data) => {

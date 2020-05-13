@@ -82,4 +82,18 @@ export class Controller {
 
         return inverse;
     }
+
+    generateMatrix(order: number): number[][] {
+        var matrix: number[][] = [];
+        for (let i = 0; i < order; i++) {
+            matrix[i] = [];
+            for (let j = 0; j < order; j++) {
+                if (i === j) {
+                    matrix[i][j] = order + 1;   
+                } else {
+                    matrix[i][j] = 1;            }
+            }
+        }
+        return matrix;
+    };
 }
