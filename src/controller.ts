@@ -1,3 +1,5 @@
+const { PerformanceObserver, performance } = require('perf_hooks');
+
 export class Controller {
 
     add(a: number, b: number): number {
@@ -49,6 +51,7 @@ export class Controller {
         var m: number = matrix.length;
         var inverse: number[][] = [];
         var ratio: number;
+        var startTime = performance.now();
 
         for (let i = 0; i < m; i++) {
             for (let j = m; j < 2*m; j++) {
@@ -79,6 +82,8 @@ export class Controller {
                 inverse[i][j-m] = matrix[i][j]
             }
         }
+        var endTime = performance.now();
+        inverse.push([endTime - startTime]);
 
         return inverse;
     }
